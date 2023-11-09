@@ -1031,37 +1031,25 @@ class RenewableCert(interfaces.RenewableCert):
                 return True
         return False
 
+    @staticmethod
+    def check_and_delete_directories(archive, live_dir, lineagename, force_delete):
+        if os.path.exists(archive) and (not os.path.isdir(archive) or os.listdir(archive)):
+            if force_delete:
+                shutil.rmtree(archive)
+            else:
+                raise errors.CertStorageError(
+                    "archive directory exists for " + lineagename)
+        if os.path.exists(live_dir) and (not os.path.isdir(live_dir) or os.listdir(live_dir)):
+            if force_delete:
+                shutil.rmtree(live_dir)
+            else:
+                raise errors.CertStorageError(
+                    "live directory exists for " + lineagename)
+
     @classmethod
     def new_lineage(cls, lineagename: str, cert: bytes, privkey: bytes, chain: bytes,
                     cli_config: configuration.NamespaceConfig) -> "RenewableCert":
-        """Create a new certificate lineage.
 
-        Attempts to create a certificate lineage -- enrolled for
-        potential future renewal -- with the (suggested) lineage name
-        lineagename, and the associated cert, privkey, and chain (the
-        associated fullchain will be created automatically). Optional
-        configurator and renewalparams record the configuration that was
-        originally used to obtain this cert, so that it can be reused
-        later during automated renewal.
-
-        Returns a new RenewableCert object referring to the created
-        lineage. (The actual lineage name, as well as all the relevant
-        file paths, will be available within this object.)
-
-        :param str lineagename: the suggested name for this lineage
-            (normally the current cert's first subject DNS name)
-        :param str cert: the initial certificate version in PEM format
-        :param str privkey: the private key in PEM format
-        :param str chain: the certificate chain in PEM format
-        :param .NamespaceConfig cli_config: parsed command line
-            arguments
-
-        :returns: the newly-created RenewalCert object
-        :rtype: :class:`storage.renewableCert`
-
-        """
-
-        # Examine the configuration and find the new lineage's name
         for i in (cli_config.renewal_configs_dir, cli_config.default_archive_dir,
                   cli_config.live_dir):
             if not os.path.exists(i):
@@ -1073,26 +1061,19 @@ class RenewableCert(interfaces.RenewableCert):
         if not os.path.exists(base_readme_path):
             _write_live_readme_to(base_readme_path, is_base_dir=True)
 
-        # Determine where on disk everything will go
-        # lineagename will now potentially be modified based on which
-        # renewal configuration file could actually be created
         lineagename = lineagename_for_filename(config_filename)
         archive = full_archive_path(None, cli_config, lineagename)
         live_dir = _full_live_path(cli_config, lineagename)
-        if os.path.exists(archive) and (not os.path.isdir(archive) or os.listdir(archive)):
-            config_file.close()
-            raise errors.CertStorageError(
-                "archive directory exists for " + lineagename)
-        if os.path.exists(live_dir) and (not os.path.isdir(live_dir) or os.listdir(live_dir)):
-            config_file.close()
-            raise errors.CertStorageError(
-                "live directory exists for " + lineagename)
+
+        force_delete = cli_config.overwrite_cert_dirs
+
+        cls.check_and_delete_directories(archive, live_dir, lineagename, force_delete)
+
         for i in (archive, live_dir):
             if not os.path.exists(i):
                 filesystem.makedirs(i)
                 logger.debug("Creating directory %s.", i)
 
-        # Put the data into the appropriate files on disk
         target = {kind: os.path.join(live_dir, kind + ".pem") for kind in ALL_FOUR}
         archive_target = {kind: os.path.join(archive, kind + "1.pem") for kind in ALL_FOUR}
         for kind in ALL_FOUR:
@@ -1103,29 +1084,21 @@ class RenewableCert(interfaces.RenewableCert):
         with util.safe_open(archive_target["privkey"], "wb", chmod=BASE_PRIVKEY_MODE) as f_a:
             logger.debug("Writing private key to %s.", target["privkey"])
             f_a.write(privkey)
-            # XXX: Let's make sure to get the file permissions right here
         with open(target["chain"], "wb") as f_b:
             logger.debug("Writing chain to %s.", target["chain"])
             f_b.write(chain)
         with open(target["fullchain"], "wb") as f_b:
-            # assumes that OpenSSL.crypto.dump_certificate includes
-            # ending newline character
             logger.debug("Writing full chain to %s.", target["fullchain"])
             f_b.write(cert + chain)
 
-        # Write a README file to the live directory
         readme_path = os.path.join(live_dir, README)
         _write_live_readme_to(readme_path)
-
-        # Document what we've done in a new renewal config file
         config_file.close()
-
-        # Save only the config items that are relevant to renewal
         values = relevant_values(cli_config)
-
         new_config = write_renewal_config(config_filename, config_filename, archive,
-            target, values)
+                                          target, values)
         return cls(new_config.filename, cli_config)
+
 
     def _private_key(self) -> Union[RSAPrivateKey, EllipticCurvePrivateKey]:
         with open(self.configuration["privkey"], "rb") as priv_key_file:

@@ -87,6 +87,7 @@ CLI_DEFAULTS: Dict[str, Any] = dict(  # noqa
     eab_kid=None,
     issuance_timeout=90,
     run_deploy_hooks=False,
+    overwrite_cert_dirs=False,
 
     # Subparsers
     num=None,

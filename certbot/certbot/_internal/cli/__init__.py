@@ -49,7 +49,6 @@ from certbot.plugins import enhancements
 
 logger = logging.getLogger(__name__)
 
-
 # Global, to save us from a lot of argument passing within the scope of this module
 helpful_parser: Optional[HelpfulArgumentParser] = None
 
@@ -73,8 +72,8 @@ def prepare_and_parse_args(plugins: plugins_disco.PluginsRegistry, args: List[st
     helpful.add(
         None, "-v", "--verbose", dest="verbose_count", action="count",
         default=flag_default("verbose_count"), help="This flag can be used "
-        "multiple times to incrementally increase the verbosity of output, "
-        "e.g. -vvv.")
+                                                    "multiple times to incrementally increase the verbosity of output, "
+                                                    "e.g. -vvv.")
     # This is for developers to set the level in the cli.ini, and overrides
     # the --verbose flag
     helpful.add(
@@ -101,8 +100,8 @@ def prepare_and_parse_args(plugins: plugins_disco.PluginsRegistry, args: List[st
         dest="noninteractive_mode", action="store_true",
         default=flag_default("noninteractive_mode"),
         help="Run without ever asking for user input. This may require "
-              "additional command line flags; the client will try to explain "
-              "which ones are required if it finds one missing")
+             "additional command line flags; the client will try to explain "
+             "which ones are required if it finds one missing")
     helpful.add(
         [None, "register", "run", "certonly", "enhance"],
         constants.FORCE_INTERACTIVE_FLAG, action="store_true",
@@ -266,9 +265,9 @@ def prepare_and_parse_args(plugins: plugins_disco.PluginsRegistry, args: List[st
              " Implies --non-interactive.")
     # overwrites server, handled in HelpfulArgumentParser.parse_args()
     helpful.add(["testing", "revoke", "run"], "--test-cert", "--staging",
-        dest="staging", action="store_true", default=flag_default("staging"),
-        help="Use the Let's Encrypt staging server to obtain or revoke test (invalid) "
-             "certificates; equivalent to --server " + constants.STAGING_URI)
+                dest="staging", action="store_true", default=flag_default("staging"),
+                help="Use the Let's Encrypt staging server to obtain or revoke test (invalid) "
+                     "certificates; equivalent to --server " + constants.STAGING_URI)
     helpful.add(
         "testing", "--debug", action="store_true", default=flag_default("debug"),
         help="Show tracebacks in case of errors")
@@ -352,7 +351,7 @@ def prepare_and_parse_args(plugins: plugins_disco.PluginsRegistry, args: List[st
         "security", "--staple-ocsp", action="store_true", dest="staple",
         default=flag_default("staple"),
         help="Enables OCSP Stapling. A valid OCSP response is stapled to"
-        " the certificate that the server offers during TLS.")
+             " the certificate that the server offers during TLS.")
     helpful.add(
         "security", "--no-staple-ocsp", action="store_false", dest="staple",
         default=flag_default("staple"), help=argparse.SUPPRESS)
@@ -386,26 +385,26 @@ def prepare_and_parse_args(plugins: plugins_disco.PluginsRegistry, args: List[st
     helpful.add(
         ["renew", "reconfigure"], "--pre-hook",
         help="Command to be run in a shell before obtaining any certificates."
-        " Unless --disable-hook-validation is used, the command’s first word"
-        " must be the absolute pathname of an executable or one found via the"
-        " PATH environment variable."
-        " Intended primarily for renewal, where it can be used to temporarily"
-        " shut down a webserver that might conflict with the standalone"
-        " plugin. This will only be called if a certificate is actually to be"
-        " obtained/renewed. When renewing several certificates that have"
-        " identical pre-hooks, only the first will be executed.")
+             " Unless --disable-hook-validation is used, the command’s first word"
+             " must be the absolute pathname of an executable or one found via the"
+             " PATH environment variable."
+             " Intended primarily for renewal, where it can be used to temporarily"
+             " shut down a webserver that might conflict with the standalone"
+             " plugin. This will only be called if a certificate is actually to be"
+             " obtained/renewed. When renewing several certificates that have"
+             " identical pre-hooks, only the first will be executed.")
     helpful.add(
         ["renew", "reconfigure"], "--post-hook",
         help="Command to be run in a shell after attempting to obtain/renew"
-        " certificates."
-        " Unless --disable-hook-validation is used, the command’s first word"
-        " must be the absolute pathname of an executable or one found via the"
-        " PATH environment variable."
-        " Can be used to deploy renewed certificates, or to"
-        " restart any servers that were stopped by --pre-hook. This is only"
-        " run if an attempt was made to obtain/renew a certificate. If"
-        " multiple renewed certificates have identical post-hooks, only"
-        " one will be run.")
+             " certificates."
+             " Unless --disable-hook-validation is used, the command’s first word"
+             " must be the absolute pathname of an executable or one found via the"
+             " PATH environment variable."
+             " Can be used to deploy renewed certificates, or to"
+             " restart any servers that were stopped by --pre-hook. This is only"
+             " run if an attempt was made to obtain/renew a certificate. If"
+             " multiple renewed certificates have identical post-hooks, only"
+             " one will be run.")
     helpful.add(["renew", "reconfigure"], "--renew-hook",
                 action=_RenewHookAction, help=argparse.SUPPRESS)
     helpful.add(
@@ -415,46 +414,53 @@ def prepare_and_parse_args(plugins: plugins_disco.PluginsRegistry, args: List[st
     helpful.add(
         ["renew", "reconfigure"], "--deploy-hook", action=_DeployHookAction,
         help='Command to be run in a shell once for each successfully'
-        ' issued certificate.'
-        ' Unless --disable-hook-validation is used, the command’s first word'
-        ' must be the absolute pathname of an executable or one found via the'
-        ' PATH environment variable.'
-        ' For this command, the shell variable'
-        ' $RENEWED_LINEAGE will point to the config live subdirectory'
-        ' (for example, "/etc/letsencrypt/live/example.com") containing'
-        ' the new certificates and keys; the shell variable'
-        ' $RENEWED_DOMAINS will contain a space-delimited list of'
-        ' renewed certificate domains (for example, "example.com'
-        ' www.example.com")')
+             ' issued certificate.'
+             ' Unless --disable-hook-validation is used, the command’s first word'
+             ' must be the absolute pathname of an executable or one found via the'
+             ' PATH environment variable.'
+             ' For this command, the shell variable'
+             ' $RENEWED_LINEAGE will point to the config live subdirectory'
+             ' (for example, "/etc/letsencrypt/live/example.com") containing'
+             ' the new certificates and keys; the shell variable'
+             ' $RENEWED_DOMAINS will contain a space-delimited list of'
+             ' renewed certificate domains (for example, "example.com'
+             ' www.example.com")')
     helpful.add(
         "renew", "--disable-hook-validation",
         action="store_false", dest="validate_hooks",
         default=flag_default("validate_hooks"),
         help="Ordinarily the commands specified for"
-        " --pre-hook/--post-hook/--deploy-hook will be checked for"
-        " validity, to see if the programs being run are in the $PATH,"
-        " so that mistakes can be caught early, even when the hooks"
-        " aren't being run just yet. The validation is rather"
-        " simplistic and fails if you use more advanced shell"
-        " constructs, so you can use this switch to disable it."
-        " (default: False)")
+             " --pre-hook/--post-hook/--deploy-hook will be checked for"
+             " validity, to see if the programs being run are in the $PATH,"
+             " so that mistakes can be caught early, even when the hooks"
+             " aren't being run just yet. The validation is rather"
+             " simplistic and fails if you use more advanced shell"
+             " constructs, so you can use this switch to disable it."
+             " (default: False)")
     helpful.add(
         "renew", "--no-directory-hooks", action="store_false",
         default=flag_default("directory_hooks"), dest="directory_hooks",
         help="Disable running executables found in Certbot's hook directories"
-        " during renewal. (default: False)")
+             " during renewal. (default: False)")
     helpful.add(
         "renew", "--disable-renew-updates", action="store_true",
         default=flag_default("disable_renew_updates"), dest="disable_renew_updates",
         help="Disable automatic updates to your server configuration that"
-        " would otherwise be done by the selected installer plugin, and triggered"
-        " when the user executes \"certbot renew\", regardless of if the certificate"
-        " is renewed. This setting does not apply to important TLS configuration"
-        " updates.")
+             " would otherwise be done by the selected installer plugin, and triggered"
+             " when the user executes \"certbot renew\", regardless of if the certificate"
+             " is renewed. This setting does not apply to important TLS configuration"
+             " updates.")
     helpful.add(
         "renew", "--no-autorenew", action="store_false",
         default=flag_default("autorenew"), dest="autorenew",
         help="Disable auto renewal of certificates. (default: False)")
+
+    helpful.add(
+        "automation", "--overwrite-cert-dirs", dest="overwrite_cert_dirs", action="store_true",
+        default=flag_default("overwrite_cert_dirs"),
+        help="Overwrite all certificate files (key/cert/chain/renewal) in the specified "
+             "certificate directories without asking. Useful for automation via cron. "
+             "Implies --non-interactive.")
 
     # Deprecated arguments
     helpful.add_deprecated_argument("--os-packages-only", 0)
@@ -471,7 +477,7 @@ def prepare_and_parse_args(plugins: plugins_disco.PluginsRegistry, args: List[st
     # parser (--help should display plugin-specific options last)
     _plugins_parsing(helpful, plugins)
 
-    global helpful_parser # pylint: disable=global-statement
+    global helpful_parser  # pylint: disable=global-statement
     helpful_parser = helpful
     return helpful.parse_args()
 
