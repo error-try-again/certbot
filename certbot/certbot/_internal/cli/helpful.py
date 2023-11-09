@@ -64,7 +64,6 @@ class HelpfulArgumentParser:
             "delete": main.delete,
             "enhance": main.enhance,
             "reconfigure": main.reconfigure,
-            "overwrite_cert_dirs:": main.overwrite_cert_dirs,
         }
 
         # Get notification function for printing
@@ -290,7 +289,7 @@ class HelpfulArgumentParser:
             raise errors.Error(
                 "Flag for non-interactive mode and {0} conflict".format(
                     constants.FORCE_INTERACTIVE_FLAG))
-            
+
         if config.staging or config.dry_run:
             self.set_test_server(config)
 
