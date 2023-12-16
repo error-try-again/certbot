@@ -2,11 +2,27 @@
 
 Certbot adheres to [Semantic Versioning](https://semver.org/).
 
-## 2.8.0 - master
+## 2.9.0 - master
 
 ### Added
 
+* Support for Python 3.12 was added.
+
+### Changed
+
 *
+
+### Fixed
+
+*
+
+More details about these changes can be found on our GitHub repo.
+
+## 2.8.0 - 2023-12-05
+
+### Added
+
+* Added support for [Alpine Linux](https://www.alpinelinux.org) distribution when is used the apache plugin
 
 ### Changed
 
@@ -14,7 +30,7 @@ Certbot adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-*
+* Stop using the deprecated `pkg_resources` API included in `setuptools`.
 
 More details about these changes can be found on our GitHub repo.
 
