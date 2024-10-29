@@ -2,7 +2,7 @@
 
 Certbot adheres to [Semantic Versioning](https://semver.org/).
 
-## 2.11.0 - master
+## 3.0.0 - main
 
 ### Added
 
@@ -10,11 +10,38 @@ Certbot adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-*
+* The update_symlinks command was removed.
+* The `csr_dir` and `key_dir` attributes on
+  `certbot.configuration.NamespaceConfig` were removed.
+* The `--manual-public-ip-logging-ok` command line flag was removed.
+* The `--dns-route53-propagation-seconds` command line flag was removed.
+* The `certbot_dns_route53.authenticator` module has been removed. This should
+  not affect any users of the plugin and instead would only affect developers
+  trying to develop on top of the old code.
 
 ### Fixed
 
 *
+
+More details about these changes can be found on our GitHub repo.
+
+## 2.11.0 - 2024-06-05
+
+### Added
+
+*
+
+### Changed
+
+* In anticipation of backwards incompatible changes, certbot-dns-cloudflare now
+  requires less than version 2.20 of Cloudflare's python library.
+
+### Fixed
+
+* Fixed a bug in Certbot where a CSR's SANs did not always follow the order of
+  the domain names that the user requested interactively. In some cases, the
+  resulting cert's common name might seem picked up randomly from the SANs
+  when it should be the first item the user had in mind.
 
 More details about these changes can be found on our GitHub repo.
 

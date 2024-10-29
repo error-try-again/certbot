@@ -99,7 +99,7 @@ Apache
 ------
 
 The Apache plugin currently `supports
-<https://github.com/certbot/certbot/blob/master/certbot-apache/certbot_apache/_internal/entrypoint.py>`_
+<https://github.com/certbot/certbot/blob/main/certbot-apache/certbot_apache/_internal/entrypoint.py>`_
 modern OSes based on Debian, Fedora, SUSE, Gentoo, CentOS and Darwin.
 This automates both obtaining *and* installing certificates on an Apache
 webserver. To specify this plugin on the command line, simply include
@@ -326,6 +326,8 @@ dns-dnsmanager_    Y    N    DNS Authentication for dnsmanager.io
 standalone-nfq_    Y    N    HTTP Authentication that works with any webserver (Linux only)
 dns-solidserver_   Y    N    DNS Authentication using SOLIDserver (EfficientIP)
 dns-stackit_       Y    N    DNS Authentication using STACKIT DNS
+dns-ionos_         Y    N    DNS Authentication using IONOS Cloud DNS
+dns-mijn-host_     Y    N    DNS Authentication using mijn.host DNS
 ================== ==== ==== ===============================================================
 
 .. _haproxy: https://github.com/greenhost/certbot-haproxy
@@ -353,6 +355,8 @@ dns-stackit_       Y    N    DNS Authentication using STACKIT DNS
 .. _standalone-nfq: https://github.com/alexzorin/certbot-standalone-nfq
 .. _dns-solidserver: https://gitlab.com/charlyhong/certbot-dns-solidserver
 .. _dns-stackit: https://github.com/stackitcloud/certbot-dns-stackit
+.. _dns-ionos: https://github.com/ionos-cloud/certbot-dns-ionos-cloud
+.. _dns-mijn-host: https://github.com/mijnhost/certbot-dns-mijn-host
 
 If you're interested, you can also :ref:`write your own plugin <dev-plugin>`.
 
